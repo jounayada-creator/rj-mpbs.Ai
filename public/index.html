@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RJ MPBS AI - Global App Publisher & Google AI Key Support</title>
+    <title>RJ MPBS AI - Global Multi-Agent & App Publisher Platform</title>
     <style>
         :root {
             --primary: #4f46e5;
@@ -95,9 +95,9 @@
     <div id="loginModal">
         <div class="login-box">
             <h1>RJ MPBS AI</h1>
-            <p>আপনার জিমেইল দিন (যেমন: jounayada@gmail.com)</p>
-            <input type="email" id="userEmail" placeholder="jounayada@gmail.com">
-            <button onclick="loginUser()">প্রবেশ করুন</button>
+            <p>Enter your authorized Gmail to access</p>
+            <input type="email" id="userEmail" placeholder="yourname@gmail.com">
+            <button onclick="loginUser()">Access Platform</button>
         </div>
     </div>
 
@@ -112,12 +112,11 @@
     <header>
         <div class="logo">⚡ <span>RJ MPBS AI</span> Studio Engine</div>
         <div class="toolbar">
-            <!-- Google AI Studio API Key Input Box -->
             <input type="password" id="apiKeyInput" class="api-input" placeholder="🔑 Google AI Studio Key">
             <select id="langSelect">
-                <option value="auto">🌐 Universal Languages</option>
-                <option value="bn">বাংলা (Bengali)</option>
+                <option value="auto">🌐 Universal (Auto Detect)</option>
                 <option value="en">English</option>
+                <option value="bn">বাংলা (Bengali)</option>
                 <option value="ar">العربية (Arabic)</option>
                 <option value="hi">हिन्दी (Hindi)</option>
             </select>
@@ -134,30 +133,30 @@
         <div class="agent-panel">
             <div class="avatar-box">🤖</div>
             <div class="agent-name">RJ Live Agent</div>
-            <div class="agent-status">● AI Key Connected</div>
+            <div class="agent-status">● Global Ready</div>
             <div class="feature-list">
-                <div class="feature-item">🔑 Google AI Studio API Key Support</div>
-                <div class="feature-item">🌍 পৃথিবীর যেকোনো লোকেশন ট্যাগিং</div>
-                <div class="feature-item">🚀 ওয়েবসাইট ও অ্যাপ পাবলিশিং</div>
+                <div class="feature-item">🔑 Google AI Studio API Support</div>
+                <div class="feature-item">🌍 Global Location Mapping & Tagging</div>
+                <div class="feature-item">🚀 Instant App & Website Publisher</div>
             </div>
         </div>
 
         <div class="chat-panel">
             <div class="chat-messages" id="chatBox">
-                <div class="msg ai-msg">স্বাগতম! আপনার `jounayada@gmail.com` জিমেইল দিয়ে প্রবেশ করুন এবং উপরের বক্সে আপনার Google AI Studio API Key বসিয়ে যেকোনো এআই প্রসেস বা অ্যাপ পাবলিশিং পরিচালনা করুন।</div>
+                <div class="msg ai-msg">Welcome to RJ MPBS AI! Please log in with your authorized Gmail. You can input your Google AI Studio API key above and communicate in any language or publish apps globally.</div>
             </div>
 
             <div style="padding: 10px 15px; display: flex; gap: 10px; background: #0f172a; border-top: 1px solid var(--border); flex-wrap: wrap;">
-                <button class="tool-btn" onclick="sendQuickAction('image')">🎨 ডিজাইন/স্টিকার</button>
-                <button class="tool-btn" onclick="sendQuickAction('publish-app')">🚀 অ্যাপ/ওয়েবসাইট পাবলিশ</button>
-                <button class="tool-btn" onclick="tagGlobalLocation()">📍 গ্লোবাল লোকেশন ট্যাগ</button>
+                <button class="tool-btn" onclick="sendQuickAction('image')">🎨 Design / Sticker</button>
+                <button class="tool-btn" onclick="sendQuickAction('publish-app')">🚀 Publish App / Web</button>
+                <button class="tool-btn" onclick="tagGlobalLocation()">📍 Global Location Tag</button>
             </div>
 
             <div class="input-bar">
-                <input type="text" id="userInput" placeholder="Type prompt or query here..." onkeypress="if(event.key==='Enter') sendMessage()">
+                <input type="text" id="userInput" placeholder="Type prompt, app idea or global location..." onkeypress="if(event.key==='Enter') sendMessage()">
                 <button class="tool-btn" onclick="startVoiceInput()">🎙️ Speak</button>
                 <button class="tool-btn" onclick="speakLastResponse()">🔊 Listen</button>
-                <button class="send-btn" onclick="sendMessage()">প্রেরণ</button>
+                <button class="send-btn" onclick="sendMessage()">Send</button>
             </div>
         </div>
     </div>
@@ -170,7 +169,7 @@
         function loginUser() {
             const email = document.getElementById('userEmail').value.trim();
             if(!email || !email.includes('@')) {
-                alert('দয়া করে সঠিক জিমেইল দিন।');
+                alert('Please enter a valid Gmail address.');
                 return;
             }
             loggedEmail = email;
@@ -180,7 +179,7 @@
 
         function startVoiceInput() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) return alert('ভয়েস রিকগনিশন কাজ করছে না।');
+            if (!SpeechRecognition) return alert('Speech recognition is not supported in this browser.');
             const recognition = new SpeechRecognition();
             recognition.start();
             recognition.onresult = (e) => {
@@ -201,7 +200,7 @@
         }
 
         async function tagGlobalLocation() {
-            const locName = prompt("পৃথিবীর যেকোনো স্থান বা শহরের নাম লিখুন:", "Dhaka, Bangladesh");
+            const locName = prompt("Enter any global location or city name (e.g., New York, Tokyo, London, Dhaka, Muscat):", "New York, USA");
             if(!locName) return;
             document.getElementById('userInput').value = `Show map and guide for ${locName}`;
             processAIRequest('location', locName);
@@ -237,7 +236,7 @@
                         language: document.getElementById('langSelect').value,
                         isSubscribed: isUserSubscribed,
                         location: customLocation || null,
-                        apiKey: userApiKey // গুগল এআই স্টুডিও এপিআই কি ব্যাকএন্ডে পাঠানো হচ্ছে
+                        apiKey: userApiKey
                     })
                 });
                 const data = await res.json();
@@ -252,7 +251,7 @@
                 replyHTML += `</div>`;
                 chatBox.innerHTML += replyHTML;
             } catch (err) {
-                chatBox.innerHTML += `<div class="msg ai-msg">সার্ভারে সংযোগ স্থাপন করা যায়নি।</div>`;
+                chatBox.innerHTML += `<div class="msg ai-msg">Server connection error occurred.</div>`;
             }
             chatBox.scrollTop = chatBox.scrollHeight;
         }
@@ -260,7 +259,7 @@
         function closeSubModal() {
             isUserSubscribed = true;
             document.getElementById('subModal').style.display = 'none';
-            alert('সাবস্ক্রিপশন আপডেট করা হয়েছে!');
+            alert('Subscription status updated successfully!');
         }
 
         function escapeHtml(text) {
@@ -269,4 +268,4 @@
         }
     </script>
 </body>
-  </html>
+</html>
