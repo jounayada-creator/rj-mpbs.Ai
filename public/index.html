@@ -6,96 +6,110 @@
     <title>RJ MPBS AI - Global Multi-Agent & App Publisher Platform</title>
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --bg: #030712;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #090d16;
             --card: #111827;
-            --text: #f9fafb;
+            --text: #f3f4f6;
             --text-muted: #9ca3af;
             --border: #1f2937;
             --accent: #10b981;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
         #loginModal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(3, 7, 18, 0.95); display: flex; justify-content: center; align-items: center; z-index: 2000;
+            background: rgba(9, 13, 22, 0.96); display: flex; justify-content: center; align-items: center; z-index: 2000;
+            backdrop-filter: blur(8px);
         }
         .login-box {
-            background: var(--card); border: 1px solid var(--border); padding: 40px; border-radius: 16px;
-            width: 100%; max-width: 420px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            background: var(--card); border: 1px solid var(--border); padding: 40px; border-radius: 20px;
+            width: 100%; max-width: 420px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
         }
-        .login-box h1 { color: var(--primary); margin-bottom: 8px; font-size: 1.8rem; }
+        .login-box .modal-logo { width: 64px; height: 64px; margin: 0 auto 16px; background: linear-gradient(135deg, #6366f1, #a855f7); border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px rgba(99, 102, 241, 0.4); }
+        .login-box h1 { color: #fff; margin-bottom: 8px; font-size: 1.7rem; font-weight: 700; }
         .login-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px; }
         .login-box input {
-            width: 100%; padding: 12px 16px; background: #1f2937; border: 1px solid var(--border);
-            border-radius: 8px; color: #fff; margin-bottom: 16px; outline: none; font-size: 1rem;
+            width: 100%; padding: 14px 16px; background: #1a2234; border: 1px solid var(--border);
+            border-radius: 10px; color: #fff; margin-bottom: 16px; outline: none; font-size: 1rem; transition: 0.2s;
         }
+        .login-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
         .login-box button {
-            width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none;
-            border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s;
+            width: 100%; padding: 14px; background: var(--primary); color: #fff; border: none;
+            border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.2s;
         }
         .login-box button:hover { background: var(--primary-hover); }
 
         header {
-            background: var(--card); border-bottom: 1px solid var(--border); padding: 12px 24px;
-            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: var(--card); border-bottom: 1px solid var(--border); padding: 14px 24px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
         }
-        .logo { font-weight: 700; font-size: 1.25rem; display: flex; align-items: center; gap: 10px; }
-        .logo span { color: var(--primary); }
+        .logo-container { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 1.2rem; color: #fff; }
+        .brand-icon {
+            width: 38px; height: 38px; background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+        }
+        .brand-icon svg { width: 22px; height: 22px; fill: #fff; }
+        .logo-container span { color: var(--primary); }
 
         .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         select, button.tool-btn, input.api-input {
-            background: #1f2937; color: #fff; border: 1px solid var(--border); padding: 8px 12px;
-            border-radius: 8px; outline: none; font-size: 0.85rem; transition: 0.2s;
+            background: #1a2234; color: #fff; border: 1px solid var(--border); padding: 8px 14px;
+            border-radius: 8px; outline: none; font-size: 0.85rem; transition: 0.2s; cursor: pointer;
         }
-        input.api-input { width: 180px; }
+        input.api-input { width: 200px; cursor: text; }
         select:hover, button.tool-btn:hover, input.api-input:focus { border-color: var(--primary); }
 
-        .main-layout { flex: 1; display: flex; max-width: 1350px; width: 100%; margin: 0 auto; padding: 20px; gap: 20px; overflow: hidden; }
+        .main-layout { flex: 1; display: flex; max-width: 1400px; width: 100%; margin: 0 auto; padding: 20px; gap: 20px; overflow: hidden; }
 
         .agent-panel {
             width: 320px; background: var(--card); border: 1px solid var(--border); border-radius: 16px;
-            display: flex; flex-direction: column; align-items: center; padding: 20px; text-align: center; gap: 15px;
+            display: flex; flex-direction: column; align-items: center; padding: 24px; text-align: center; gap: 16px;
         }
         .avatar-box {
-            width: 140px; height: 140px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), #3b82f6);
-            display: flex; justify-content: center; align-items: center; font-size: 3.5rem; box-shadow: 0 0 20px rgba(79, 70, 229, 0.4);
+            width: 100px; height: 100px; border-radius: 20px; background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(168,85,247,0.2));
+            border: 1px solid rgba(99,102,241,0.4); display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.15);
         }
-        .agent-name { font-size: 1.1rem; font-weight: 600; }
-        .agent-status { font-size: 0.8rem; color: var(--accent); background: rgba(16, 185, 129, 0.1); padding: 4px 10px; border-radius: 20px; }
-        .feature-list { width: 100%; text-align: left; margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
-        .feature-item { font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+        .avatar-box svg { width: 50px; height: 50px; fill: var(--primary); }
+        .agent-name { font-size: 1.15rem; font-weight: 600; color: #fff; }
+        .agent-status { font-size: 0.75rem; color: var(--accent); background: rgba(16, 185, 129, 0.1); padding: 4px 12px; border-radius: 20px; font-weight: 500; border: 1px solid rgba(16, 185, 129, 0.2); }
+        .feature-list { width: 100%; text-align: left; margin-top: 10px; display: flex; flex-direction: column; gap: 10px; }
+        .feature-item { font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 10px; }
+        .feature-item svg { width: 16px; height: 16px; fill: var(--primary); flex-shrink: 0; }
 
         .chat-panel { flex: 1; display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
-        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-        .msg { padding: 12px 18px; border-radius: 12px; max-width: 85%; line-height: 1.6; font-size: 0.95rem; word-break: break-word; }
-        .user-msg { background: var(--primary); color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .ai-msg { background: #1f2937; color: var(--text); align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid var(--border); }
-        .ai-msg img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
-        .preview-frame { width: 100%; height: 250px; border: 1px solid var(--border); border-radius: 8px; background: #fff; margin-top: 10px; }
-
-        .input-bar { display: flex; gap: 10px; padding: 15px; background: #0b0f19; border-top: 1px solid var(--border); align-items: center; }
-        .input-bar input { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; color: #fff; outline: none; font-size: 1rem; }
-        .input-bar button.send-btn { background: var(--primary); color: #fff; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; }
+        .chat-messages { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+        .msg { padding: 14px 18px; border-radius: 12px; max-width: 85%; line-height: 1.6; font-size: 0.95rem; word-break: break-word; }
+        .user-msg { background: var(--primary); color: #fff; align-self: flex-end; border-bottom-right-radius: 3px; }
+        .ai-msg { background: #1a2234; color: var(--text); align-self: flex-start; border-bottom-left-radius: 3px; border: 1px solid var(--border); }
+        
+        .input-bar { display: flex; gap: 10px; padding: 16px; background: #0b0f19; border-top: 1px solid var(--border); align-items: center; }
+        .input-bar input { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 18px; color: #fff; outline: none; font-size: 1rem; }
+        .input-bar input:focus { border-color: var(--primary); }
+        .input-bar button.send-btn { background: var(--primary); color: #fff; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .input-bar button.send-btn:hover { background: var(--primary-hover); }
 
         #subModal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8);
-            display: none; justify-content: center; align-items: center; z-index: 3000;
+            display: none; justify-content: center; align-items: center; z-index: 3000; backdrop-filter: blur(5px);
         }
-        .sub-card { background: var(--card); padding: 30px; border-radius: 16px; border: 1px solid var(--primary); text-align: center; max-width: 400px; width: 100%; }
-        .sub-card h2 { color: #f59e0b; margin-bottom: 10px; }
-        .sub-card p { color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem; }
+        .sub-card { background: var(--card); padding: 35px; border-radius: 20px; border: 1px solid var(--primary); text-align: center; max-width: 400px; width: 100%; }
+        .sub-card h2 { color: #f59e0b; margin-bottom: 12px; font-size: 1.4rem; }
+        .sub-card p { color: var(--text-muted); margin-bottom: 24px; font-size: 0.9rem; line-height: 1.5; }
     </style>
 </head>
 <body>
 
     <div id="loginModal">
         <div class="login-box">
+            <div class="modal-logo">
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
             <h1>RJ MPBS AI</h1>
-            <p>Enter your authorized Gmail to access</p>
+            <p>Enter your authorized Gmail to access the workspace</p>
             <input type="email" id="userEmail" placeholder="yourname@gmail.com">
             <button onclick="loginUser()">Access Platform</button>
         </div>
@@ -104,58 +118,62 @@
     <div id="subModal">
         <div class="sub-card">
             <h2>🔒 Subscription Required</h2>
-            <p>To publish apps/websites or use advanced features, please update your subscription.</p>
-            <button class="tool-btn" style="background:var(--primary); width:100%;" onclick="closeSubModal()">Update Subscription</button>
+            <p>To publish apps/websites or use advanced features, please update your platform subscription.</p>
+            <button class="tool-btn" style="background:var(--primary); width:100%; padding:12px;" onclick="closeSubModal()">Update Subscription</button>
         </div>
     </div>
 
     <header>
-        <div class="logo">⚡ <span>RJ MPBS AI</span> Studio Engine</div>
+        <div class="logo-container">
+            <div class="brand-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            RJ MPBS <span>AI Engine</span>
+        </div>
         <div class="toolbar">
             <input type="password" id="apiKeyInput" class="api-input" placeholder="🔑 Google AI Studio Key">
             <select id="langSelect">
-                <option value="auto">🌐 Universal (Auto Detect)</option>
+                <option value="auto">🌐 Universal (Auto Match)</option>
                 <option value="en">English</option>
                 <option value="bn">বাংলা (Bengali)</option>
                 <option value="ar">العربية (Arabic)</option>
                 <option value="hi">हिन्दी (Hindi)</option>
             </select>
             <select id="modelSelect">
-                <option value="gemini">Gemini Core</option>
-                <option value="chatgpt">ChatGPT Engine</option>
-                <option value="claude">Claude Engine</option>
+                <option value="gemini">Gemini Pro Core</option>
+                <option value="gpt">OpenAI Engine</option>
             </select>
-            <span id="userDisplay" style="font-size:0.85rem; color:var(--text-muted);"></span>
+            <span id="userDisplay" style="font-size:0.85rem; color:var(--text-muted); padding-left:5px;"></span>
         </div>
     </header>
 
     <div class="main-layout">
         <div class="agent-panel">
-            <div class="avatar-box">🤖</div>
-            <div class="agent-name">RJ Live Agent</div>
-            <div class="agent-status">● Global Ready</div>
+            <div class="avatar-box">
+                <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm1-13h-2v6h6v-2h-4z"/></svg>
+            </div>
+            <div class="agent-name">RJ Intelligence</div>
+            <div class="agent-status">● Global Neural Active</div>
             <div class="feature-list">
-                <div class="feature-item">🔑 Google AI Studio API Support</div>
-                <div class="feature-item">🌍 Global Location Mapping & Tagging</div>
-                <div class="feature-item">🚀 Instant App & Website Publisher</div>
+                <div class="feature-item"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Live Google AI Studio API</div>
+                <div class="feature-item"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Multi-Language Natural Sync</div>
+                <div class="feature-item"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Global App Publisher Ready</div>
             </div>
         </div>
 
         <div class="chat-panel">
             <div class="chat-messages" id="chatBox">
-                <div class="msg ai-msg">Welcome to RJ MPBS AI! Please log in with your authorized Gmail. You can input your Google AI Studio API key above and communicate in any language or publish apps globally.</div>
+                <div class="msg ai-msg">Hello! I am your AI assistant. You can type anything, ask questions, or request assistance in any language you prefer. How can I help you today?</div>
             </div>
 
-            <div style="padding: 10px 15px; display: flex; gap: 10px; background: #0f172a; border-top: 1px solid var(--border); flex-wrap: wrap;">
-                <button class="tool-btn" onclick="sendQuickAction('image')">🎨 Design / Sticker</button>
-                <button class="tool-btn" onclick="sendQuickAction('publish-app')">🚀 Publish App / Web</button>
-                <button class="tool-btn" onclick="tagGlobalLocation()">📍 Global Location Tag</button>
+            <div style="padding: 10px 18px; display: flex; gap: 10px; background: #0b0f19; border-top: 1px solid var(--border); flex-wrap: wrap;">
+                <button class="tool-btn" onclick="quickPrompt('Create a modern custom sticker design concept.')">🎨 Custom Sticker Design</button>
+                <button class="tool-btn" onclick="quickPrompt('Build and publish a professional web application code.')">🚀 Publish Web App</button>
             </div>
 
             <div class="input-bar">
-                <input type="text" id="userInput" placeholder="Type prompt, app idea or global location..." onkeypress="if(event.key==='Enter') sendMessage()">
-                <button class="tool-btn" onclick="startVoiceInput()">🎙️ Speak</button>
-                <button class="tool-btn" onclick="speakLastResponse()">🔊 Listen</button>
+                <input type="text" id="userInput" placeholder="Type your message or prompt here..." onkeypress="if(event.key==='Enter') sendMessage()">
+                <button class="tool-btn" onclick="startVoiceInput()">🎙️ Voice</button>
                 <button class="send-btn" onclick="sendMessage()">Send</button>
             </div>
         </div>
@@ -163,8 +181,7 @@
 
     <script>
         let loggedEmail = "";
-        let isUserSubscribed = false; 
-        let lastAiText = "";
+        let isUserSubscribed = false;
 
         function loginUser() {
             const email = document.getElementById('userEmail').value.trim();
@@ -175,6 +192,11 @@
             loggedEmail = email;
             document.getElementById('userDisplay').innerText = loggedEmail;
             document.getElementById('loginModal').style.display = 'none';
+        }
+
+        function quickPrompt(text) {
+            document.getElementById('userInput').value = text;
+            sendMessage();
         }
 
         function startVoiceInput() {
@@ -188,39 +210,16 @@
             };
         }
 
-        function speakLastResponse() {
-            if (!lastAiText) return;
-            window.speechSynthesis.speak(new SpeechSynthesisUtterance(lastAiText));
-        }
-
-        async function sendQuickAction(actionType) {
-            if(actionType === 'image') document.getElementById('userInput').value = "Create a professional custom sticker design.";
-            else if(actionType === 'publish-app') document.getElementById('userInput').value = "Build and publish a modern professional portfolio website.";
-            processAIRequest(actionType);
-        }
-
-        async function tagGlobalLocation() {
-            const locName = prompt("Enter any global location or city name (e.g., New York, Tokyo, London, Dhaka, Muscat):", "New York, USA");
-            if(!locName) return;
-            document.getElementById('userInput').value = `Show map and guide for ${locName}`;
-            processAIRequest('location', locName);
-        }
-
         async function sendMessage() {
-            processAIRequest('website');
-        }
-
-        async function processAIRequest(actionType = 'website', customLocation = null) {
             const inputField = document.getElementById('userInput');
             const chatBox = document.getElementById('chatBox');
             const message = inputField.value.trim();
             const userApiKey = document.getElementById('apiKeyInput').value.trim();
+            const selectedLang = document.getElementById('langSelect').value;
 
-            if(!message && !customLocation) return;
+            if(!message) return;
 
-            const finalMessage = message || `Show details for ${customLocation}`;
-
-            chatBox.innerHTML += `<div class="msg user-msg">${escapeHtml(finalMessage)}</div>`;
+            chatBox.innerHTML += `<div class="msg user-msg">${escapeHtml(message)}</div>`;
             inputField.value = '';
             chatBox.scrollTop = chatBox.scrollHeight;
 
@@ -229,29 +228,18 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        message: finalMessage,
+                        message: message,
                         model: document.getElementById('modelSelect').value,
                         userEmail: loggedEmail,
-                        actionType: customLocation ? 'location' : actionType,
-                        language: document.getElementById('langSelect').value,
-                        isSubscribed: isUserSubscribed,
-                        location: customLocation || null,
+                        language: selectedLang,
                         apiKey: userApiKey
                     })
                 });
                 const data = await res.json();
-                if(data.requiresSubscription) {
-                    document.getElementById('subModal').style.display = 'flex';
-                    return;
-                }
-                lastAiText = data.reply;
-                let replyHTML = `<div class="msg ai-msg">${escapeHtml(data.reply)}`;
-                if(data.mediaGenerated) replyHTML += `<br><img src="${data.mediaGenerated}">`;
-                if(data.publishedCode) replyHTML += `<br><iframe class="preview-frame" srcdoc="${escapeHtml(data.publishedCode)}"></iframe>`;
-                replyHTML += `</div>`;
-                chatBox.innerHTML += replyHTML;
+                
+                chatBox.innerHTML += `<div class="msg ai-msg">${escapeHtml(data.reply)}</div>`;
             } catch (err) {
-                chatBox.innerHTML += `<div class="msg ai-msg">Server connection error occurred.</div>`;
+                chatBox.innerHTML += `<div class="msg ai-msg">Network connection error occurred. Please try again.</div>`;
             }
             chatBox.scrollTop = chatBox.scrollHeight;
         }
@@ -259,7 +247,7 @@
         function closeSubModal() {
             isUserSubscribed = true;
             document.getElementById('subModal').style.display = 'none';
-            alert('Subscription status updated successfully!');
+            alert('Subscription updated successfully!');
         }
 
         function escapeHtml(text) {
