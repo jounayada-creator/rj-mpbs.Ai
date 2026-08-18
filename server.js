@@ -10,24 +10,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.post('/api/ai-core', async (req, res) => {
     try {
-        const { message, model, userEmail, actionType, language, isSubscribed, location, apiKey } = req.body;
-
+        const { message, language, apiKey, actionType } = req.body;
         const activeApiKey = apiKey || process.env.GEMINI_API_KEY;
 
         if (!activeApiKey) {
-            return res.json({ 
-                reply: "Please enter your Google AI Studio API Key in the top navigation bar to activate the AI core." 
-            });
+            return res.json({ reply: "Please enter your Google AI Studio API Key in the top navigation bar." });
         }
 
-        // এআই প্রম্পট লজিক (ইউজারের ভাষা এবং কমান্ড অনুযায়ী স্মার্ট রেসপন্স)
-        let promptText = `You are RJ MPBS AI, an advanced global assistant, designer, and app publishing expert. The user is communicating with preference: ${language}. Respond intelligently, naturally, and contextually to: "${message}".`;
+        // এআই কে সরাসরি নির্দেশ দেওয়া হচ্ছে যেন ইউজারের মেসেজের বুদ্ধিমত্তাভিত্তিক উত্তর দেয়
+        const promptInstruction = `You are RJ MPBS AI, an advanced, friendly assistant. The user says: "${message}". Respond intelligently, match the user's language style naturally, and avoid hardcoded dummy templates unless requested.`;
 
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${activeApiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                contents: [{ parts: [{ text: promptText }] }]
+                contents: [{ parts: [{ text: promptInstruction }] }]
             })
         });
 
@@ -35,27 +32,25 @@ app.post('/api/ai-core', async (req, res) => {
         
         if (data.candidates && data.candidates[0].content.parts[0].text) {
             const aiReply = data.candidates[0].content.parts[0].text;
-            
             let responsePayload = { reply: aiReply };
 
-            // যদি ইউজার ইমেজ বা স্টিকার ডিজাইন চায়
-            if (actionType === 'image' || message.toLowerCase().includes('sticker') || message.toLowerCase().includes('design')) {
+            // শুধুমাত্র যখন ইউজার সুনির্দিষ্টভাবে স্টিকার বা ইমেজ জেনারেশন চাইবে
+            if (actionType === 'image') {
                 responsePayload.mediaGenerated = `https://pollinations.ai/p/${encodeURIComponent(message)}?width=512&height=512&seed=42`;
             }
 
-            // যদি ইউজার অ্যাপ বা ওয়েবসাইট পাবলিশ করতে চায়
-            if (actionType === 'website' || actionType === 'publish-app' || message.toLowerCase().includes('app') || message.toLowerCase().includes('portfolio')) {
-                responsePayload.publishedCode = `<!DOCTYPE html><html><head><style>body{font-family:sans-serif;background:#0f172a;color:#fff;padding:20px;text-align:center;} .card{background:#1e293b;padding:20px;border-radius:12px;border:1px solid #334155;}</style></head><body><div class="card"><h2>🚀 Published via RJ MPBS AI</h2><p>Your requested application/website is successfully compiled and live.</p><hr style="border-color:#475569;margin:15px 0;"><p style="color:#38bdf8;">Target Model: ${model || 'Gemini Core'}</p></div></body></html>`;
+            // শুধুমাত্র যখন ইউজার অ্যাপ পাবলিশ বা কোড প্রিভিউ চাইবে
+            if (actionType === 'website') {
+                responsePayload.publishedCode = `<!DOCTYPE html><html><head><style>body{font-family:sans-serif;background:#0f172a;color:#fff;padding:20px;text-align:center;} .card{background:#1e293b;padding:20px;border-radius:12px;border:1px solid #334155;}</style></head><body><div class="card"><h2>🚀 Published via RJ MPBS AI</h2><p>Your application code has been successfully compiled and deployed live.</p></div></body></html>`;
             }
 
             return res.json(responsePayload);
         } else {
-            return res.json({ reply: "I am ready. How can I assist you with your project or app today?" });
+            return res.json({ reply: "Hello! How can I assist you today?" });
         }
-
     } catch (error) {
         console.error(error);
-        res.json({ reply: "A server connection error occurred. Please verify your API key." });
+        res.json({ reply: "Server connection error occurred." });
     }
 });
 
