@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RJ MPBS AI - Global App Publisher & Google AI Key Support</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg: #030712;
+            --card: #111827;
+            --text: #f9fafb;
+            --text-muted: #9ca3af;
+            --border: #1f2937;
+            --accent: #10b981;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        #loginModal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(3, 7, 18, 0.95); display: flex; justify-content: center; align-items: center; z-index: 2000;
+        }
+        .login-box {
+            background: var(--card); border: 1px solid var(--border); padding: 40px; border-radius: 16px;
+            width: 100%; max-width: 420px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+        .login-box h1 { color: var(--primary); margin-bottom: 8px; font-size: 1.8rem; }
+        .login-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px; }
+        .login-box input {
+            width: 100%; padding: 12px 16px; background: #1f2937; border: 1px solid var(--border);
+            border-radius: 8px; color: #fff; margin-bottom: 16px; outline: none; font-size: 1rem;
+        }
+        .login-box button {
+            width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none;
+            border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+        .login-box button:hover { background: var(--primary-hover); }
+
+        header {
+            background: var(--card); border-bottom: 1px solid var(--border); padding: 12px 24px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+        }
+        .logo { font-weight: 700; font-size: 1.25rem; display: flex; align-items: center; gap: 10px; }
+        .logo span { color: var(--primary); }
+
+        .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        select, button.tool-btn, input.api-input {
+            background: #1f2937; color: #fff; border: 1px solid var(--border); padding: 8px 12px;
+            border-radius: 8px; outline: none; font-size: 0.85rem; transition: 0.2s;
+        }
+        input.api-input { width: 180px; }
+        select:hover, button.tool-btn:hover, input.api-input:focus { border-color: var(--primary); }
+
+        .main-layout { flex: 1; display: flex; max-width: 1350px; width: 100%; margin: 0 auto; padding: 20px; gap: 20px; overflow: hidden; }
+
+        .agent-panel {
+            width: 320px; background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+            display: flex; flex-direction: column; align-items: center; padding: 20px; text-align: center; gap: 15px;
+        }
+        .avatar-box {
+            width: 140px; height: 140px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), #3b82f6);
+            display: flex; justify-content: center; align-items: center; font-size: 3.5rem; box-shadow: 0 0 20px rgba(79, 70, 229, 0.4);
+        }
+        .agent-name { font-size: 1.1rem; font-weight: 600; }
+        .agent-status { font-size: 0.8rem; color: var(--accent); background: rgba(16, 185, 129, 0.1); padding: 4px 10px; border-radius: 20px; }
+        .feature-list { width: 100%; text-align: left; margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .feature-item { font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+
+        .chat-panel { flex: 1; display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .msg { padding: 12px 18px; border-radius: 12px; max-width: 85%; line-height: 1.6; font-size: 0.95rem; word-break: break-word; }
+        .user-msg { background: var(--primary); color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .ai-msg { background: #1f2937; color: var(--text); align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid var(--border); }
+        .ai-msg img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
+        .preview-frame { width: 100%; height: 250px; border: 1px solid var(--border); border-radius: 8px; background: #fff; margin-top: 10px; }
+
+        .input-bar { display: flex; gap: 10px; padding: 15px; background: #0b0f19; border-top: 1px solid var(--border); align-items: center; }
+        .input-bar input { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; color: #fff; outline: none; font-size: 1rem; }
+        .input-bar button.send-btn { background: var(--primary); color: #fff; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; }
+        .input-bar button.send-btn:hover { background: var(--primary-hover); }
+
+        #subModal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8);
+            display: none; justify-content: center; align-items: center; z-index: 3000;
+        }
+        .sub-card { background: var(--card); padding: 30px; border-radius: 16px; border: 1px solid var(--primary); text-align: center; max-width: 400px; width: 100%; }
+        .sub-card h2 { color: #f59e0b; margin-bottom: 10px; }
+        .sub-card p { color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <div id="loginModal">
+        <div class="login-box">
+            <h1>RJ MPBS AI</h1>
+            <p>আপনার জিমেইল দিন (যেমন: jounayada@gmail.com)</p>
+            <input type="email" id="userEmail" placeholder="jounayada@gmail.com">
+            <button onclick="loginUser()">প্রবেশ করুন</button>
+        </div>
+    </div>
+
+    <div id="subModal">
+        <div class="sub-card">
+            <h2>🔒 Subscription Required</h2>
+            <p>To publish apps/websites or use advanced features, please update your subscription.</p>
+            <button class="tool-btn" style="background:var(--primary); width:100%;" onclick="closeSubModal()">Update Subscription</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo">⚡ <span>RJ MPBS AI</span> Studio Engine</div>
+        <div class="toolbar">
+            <!-- Google AI Studio API Key Input Box -->
+            <input type="password" id="apiKeyInput" class="api-input" placeholder="🔑 Google AI Studio Key">
+            <select id="langSelect">
+                <option value="auto">🌐 Universal Languages</option>
+                <option value="bn">বাংলা (Bengali)</option>
+                <option value="en">English</option>
+                <option value="ar">العربية (Arabic)</option>
+                <option value="hi">हिन्दी (Hindi)</option>
+            </select>
+            <select id="modelSelect">
+                <option value="gemini">Gemini Core</option>
+                <option value="chatgpt">ChatGPT Engine</option>
+                <option value="claude">Claude Engine</option>
+            </select>
+            <span id="userDisplay" style="font-size:0.85rem; color:var(--text-muted);"></span>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        <div class="agent-panel">
+            <div class="avatar-box">🤖</div>
+            <div class="agent-name">RJ Live Agent</div>
+            <div class="agent-status">● AI Key Connected</div>
+            <div class="feature-list">
+                <div class="feature-item">🔑 Google AI Studio API Key Support</div>
+                <div class="feature-item">🌍 পৃথিবীর যেকোনো লোকেশন ট্যাগিং</div>
+                <div class="feature-item">🚀 ওয়েবসাইট ও অ্যাপ পাবলিশিং</div>
+            </div>
+        </div>
+
+        <div class="chat-panel">
+            <div class="chat-messages" id="chatBox">
+                <div class="msg ai-msg">স্বাগতম! আপনার `jounayada@gmail.com` জিমেইল দিয়ে প্রবেশ করুন এবং উপরের বক্সে আপনার Google AI Studio API Key বসিয়ে যেকোনো এআই প্রসেস বা অ্যাপ পাবলিশিং পরিচালনা করুন।</div>
+            </div>
+
+            <div style="padding: 10px 15px; display: flex; gap: 10px; background: #0f172a; border-top: 1px solid var(--border); flex-wrap: wrap;">
+                <button class="tool-btn" onclick="sendQuickAction('image')">🎨 ডিজাইন/স্টিকার</button>
+                <button class="tool-btn" onclick="sendQuickAction('publish-app')">🚀 অ্যাপ/ওয়েবসাইট পাবলিশ</button>
+                <button class="tool-btn" onclick="tagGlobalLocation()">📍 গ্লোবাল লোকেশন ট্যাগ</button>
+            </div>
+
+            <div class="input-bar">
+                <input type="text" id="userInput" placeholder="Type prompt or query here..." onkeypress="if(event.key==='Enter') sendMessage()">
+                <button class="tool-btn" onclick="startVoiceInput()">🎙️ Speak</button>
+                <button class="tool-btn" onclick="speakLastResponse()">🔊 Listen</button>
+                <button class="send-btn" onclick="sendMessage()">প্রেরণ</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let loggedEmail = "";
+        let isUserSubscribed = false; 
+        let lastAiText = "";
+
+        function loginUser() {
+            const email = document.getElementById('userEmail').value.trim();
+            if(!email || !email.includes('@')) {
+                alert('দয়া করে সঠিক জিমেইল দিন।');
+                return;
+            }
+            loggedEmail = email;
+            document.getElementById('userDisplay').innerText = loggedEmail;
+            document.getElementById('loginModal').style.display = 'none';
+        }
+
+        function startVoiceInput() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) return alert('ভয়েস রিকগনিশন কাজ করছে না।');
+            const recognition = new SpeechRecognition();
+            recognition.start();
+            recognition.onresult = (e) => {
+                document.getElementById('userInput').value = e.results[0][0].transcript;
+                sendMessage();
+            };
+        }
+
+        function speakLastResponse() {
+            if (!lastAiText) return;
+            window.speechSynthesis.speak(new SpeechSynthesisUtterance(lastAiText));
+        }
+
+        async function sendQuickAction(actionType) {
+            if(actionType === 'image') document.getElementById('userInput').value = "Create a professional custom sticker design.";
+            else if(actionType === 'publish-app') document.getElementById('userInput').value = "Build and publish a modern professional portfolio website.";
+            processAIRequest(actionType);
+        }
+
+        async function tagGlobalLocation() {
+            const locName = prompt("পৃথিবীর যেকোনো স্থান বা শহরের নাম লিখুন:", "Dhaka, Bangladesh");
+            if(!locName) return;
+            document.getElementById('userInput').value = `Show map and guide for ${locName}`;
+            processAIRequest('location', locName);
+        }
+
+        async function sendMessage() {
+            processAIRequest('website');
+        }
+
+        async function processAIRequest(actionType = 'website', customLocation = null) {
+            const inputField = document.getElementById('userInput');
+            const chatBox = document.getElementById('chatBox');
+            const message = inputField.value.trim();
+            const userApiKey = document.getElementById('apiKeyInput').value.trim();
+
+            if(!message && !customLocation) return;
+
+            const finalMessage = message || `Show details for ${customLocation}`;
+
+            chatBox.innerHTML += `<div class="msg user-msg">${escapeHtml(finalMessage)}</div>`;
+            inputField.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                const res = await fetch('/api/ai-core', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: finalMessage,
+                        model: document.getElementById('modelSelect').value,
+                        userEmail: loggedEmail,
+                        actionType: customLocation ? 'location' : actionType,
+                        language: document.getElementById('langSelect').value,
+                        isSubscribed: isUserSubscribed,
+                        location: customLocation || null,
+                        apiKey: userApiKey // গুগল এআই স্টুডিও এপিআই কি ব্যাকএন্ডে পাঠানো হচ্ছে
+                    })
+                });
+                const data = await res.json();
+                if(data.requiresSubscription) {
+                    document.getElementById('subModal').style.display = 'flex';
+                    return;
+                }
+                lastAiText = data.reply;
+                let replyHTML = `<div class="msg ai-msg">${escapeHtml(data.reply)}`;
+                if(data.mediaGenerated) replyHTML += `<br><img src="${data.mediaGenerated}">`;
+                if(data.publishedCode) replyHTML += `<br><iframe class="preview-frame" srcdoc="${escapeHtml(data.publishedCode)}"></iframe>`;
+                replyHTML += `</div>`;
+                chatBox.innerHTML += replyHTML;
+            } catch (err) {
+                chatBox.innerHTML += `<div class="msg ai-msg">সার্ভারে সংযোগ স্থাপন করা যায়নি।</div>`;
+            }
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function closeSubModal() {
+            isUserSubscribed = true;
+            document.getElementById('subModal').style.display = 'none';
+            alert('সাবস্ক্রিপশন আপডেট করা হয়েছে!');
+        }
+
+        function escapeHtml(text) {
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+    </script>
+</body>
+  </html>
